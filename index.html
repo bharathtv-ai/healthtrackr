@@ -9,30 +9,27 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 </head>
-<body class="min-h-screen">
+<body class="min-h-screen bg-gray-950">
   <div class="max-w-7xl mx-auto p-6">
-    <!-- Header -->
+
     <div class="flex justify-between items-center mb-8">
       <h1 class="text-4xl font-bold bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
         HealthTrackr
       </h1>
-      <div id="user-info" class="flex items-center gap-3"></div>
     </div>
 
-    <!-- Login / Dashboard Toggle -->
-    <div id="login-screen" class="hidden">
-      <div class="max-w-md mx-auto bg-gray-900 p-8 rounded-2xl">
-        <h2 class="text-2xl mb-6 text-center">Sign in to continue</h2>
-        <button onclick="signIn()" class="w-full bg-white text-black py-4 rounded-xl font-semibold text-lg">
-          Sign in with Supabase
-        </button>
-      </div>
+    <!-- Login Screen -->
+    <div id="login-screen" class="max-w-md mx-auto bg-gray-900 p-8 rounded-2xl text-center">
+      <h2 class="text-2xl mb-6">Sign in to your Health Dashboard</h2>
+      <button onclick="signIn()" 
+              class="w-full bg-white text-black py-4 rounded-xl font-semibold text-lg hover:bg-gray-200">
+        Continue with Google
+      </button>
     </div>
 
     <!-- Dashboard -->
     <div id="dashboard" class="hidden">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <!-- Stats Cards -->
         <div class="bg-gray-900 p-6 rounded-2xl">
           <p class="text-gray-400">Current Weight</p>
           <p id="weight" class="text-5xl font-bold text-emerald-400">65.5 kg</p>
@@ -47,71 +44,52 @@
         </div>
       </div>
 
-      <!-- Charts -->
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
-        <div class="bg-gray-900 p-6 rounded-2xl">
-          <h3 class="text-xl mb-4">Weight Progress</h3>
-          <canvas id="weightChart"></canvas>
-        </div>
-        <div class="bg-gray-900 p-6 rounded-2xl">
-          <h3 class="text-xl mb-4">Body Measurements</h3>
-          <canvas id="measureChart"></canvas>
-        </div>
-      </div>
-
-      <!-- 3D View -->
       <div class="mt-8 bg-gray-900 p-6 rounded-2xl">
         <h3 class="text-xl mb-4">3D Body Visualization</h3>
-        <div class="bg-gray-950 rounded-xl p-4 text-center">
-          <!-- Your generated image will go here in production -->
-          <p class="text-gray-400 mb-2">Your current body composition view</p>
-          <img src="YOUR_3D_IMAGE_URL_HERE" class="mx-auto rounded-xl shadow-2xl" alt="3D View">
+        <div class="bg-gray-950 rounded-xl p-8 text-center text-gray-400">
+          3D Body View will appear here soon
         </div>
       </div>
 
-      <!-- Add New Measurement -->
       <div class="mt-8 bg-gray-900 p-6 rounded-2xl">
         <h3 class="text-xl mb-4">Add New Measurement</h3>
         <form id="measurement-form" class="grid grid-cols-2 gap-4">
           <input type="date" id="date" class="bg-gray-800 p-3 rounded-xl" value="2026-06-02">
           <input type="number" id="weight-input" placeholder="Weight (kg)" step="0.1" class="bg-gray-800 p-3 rounded-xl">
           <input type="number" id="bodyfat-input" placeholder="Body Fat %" step="0.1" class="bg-gray-800 p-3 rounded-xl">
-          <button type="submit" class="col-span-2 bg-emerald-500 hover:bg-emerald-600 py-4 rounded-xl font-semibold">Save Measurement</button>
+          <button type="submit" class="col-span-2 bg-emerald-500 hover:bg-emerald-600 py-4 rounded-xl font-semibold">
+            Save Measurement
+          </button>
         </form>
       </div>
     </div>
   </div>
 
   <script>
-    const supabase = Supabase.createClient('YOUR_SUPABASE_URL', 'YOUR_SUPABASE_ANON_KEY');
+    // ←←← CHANGE THESE TWO LINES WITH YOUR REAL SUPABASE DETAILS ↓↓↓
+    const SUPABASE_URL = "https://your-project-id.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOi...";
+
+    const supabase = Supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     async function signIn() {
-      const { error } = await supabase.auth.signInWithOAuth({ provider: 'google' });
-      if (error) alert(error.message);
+      await supabase.auth.signInWithOAuth({ provider: 'google' });
     }
 
-    // Initialize
     supabase.auth.onAuthStateChange((event, session) => {
       if (session) {
         document.getElementById('login-screen').classList.add('hidden');
         document.getElementById('dashboard').classList.remove('hidden');
-        loadDashboard();
       } else {
         document.getElementById('login-screen').classList.remove('hidden');
         document.getElementById('dashboard').classList.add('hidden');
       }
     });
 
-    async function loadDashboard() {
-      // TODO: Fetch real data from your Supabase tables
-      console.log("Dashboard loaded - connected to your Supabase!");
-    }
-
-    // Form submission
-    document.getElementById('measurement-form').addEventListener('submit', async (e) => {
+    // Form handler
+    document.getElementById('measurement-form').addEventListener('submit', (e) => {
       e.preventDefault();
-      alert("Measurement saved! (Connected to your Supabase table)");
-      // Insert code here later
+      alert("✅ Measurement saved! (We'll connect it to Supabase in next step)");
     });
   </script>
 </body>
